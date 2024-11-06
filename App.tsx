@@ -1,118 +1,61 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, Alert, NativeModules, Text} from 'react-native';
+// import {NeotekOB, changeLanguage} from 'neotek-mobile-ob-sdk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+if (__DEV__) {
+  require('../ReactotronConfig');
 }
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+export default function App() {
+  const [lang, setLang] = useState<'en' | 'ar'>('en');
+  // const handleLanguageChange = async (newLang: 'en' | 'ar') => {
+  //   await AsyncStorage.setItem('language', newLang);
+  //   setLang(newLang);
+  //   await changeLanguage(newLang);
+  // };
+  NativeModules.InsecureApi.fetchUrl(
+    'https://gateway-am-wso2-nonprod.apps.nt-non-ocp.neotek.sa/ecr/v1/auth/user',
+  )
+    .then(response => {
+      console.log(response);
+      Alert.alert('response', JSON.stringify(response));
+    })
+    .catch(error => {
+      console.error(error);
+      Alert.alert('s', JSON.stringify(error));
+    });
+  const Theme = {
+    colors: {
+      primary: '#0CBAB4',
+      secondary: '#D8ECEB',
+      positive: '#00e676',
+      negative: '#d32f2f',
+      rejected: '#f44336',
+      expired: '#767676FF',
+      pending: '#ff9800',
+      text: '#000000',
+      heading: '#333333',
+      subheading: '#666666',
+      background: '#ffffff',
+      card: '#f5f5f5',
+    },
   };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <>
+      <Text>GG</Text>
+      {/* <NeotekOB
+        mode="light"
+        theme={Theme}
+        psuId="255cc"
+        clientId="d905b5912cdc6c066b6672eb946f18f6"
+        clientSecret="c40271af19ce9a7124c061d45283ed34"
+        products={[
+          'ob_connect',
+          'iban_verification',
+          'income_verification',
+          'single_api',
+          'e_statements',
+        ]}
+      /> */}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
